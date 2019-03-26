@@ -1,15 +1,16 @@
 package main
 
 import (
-	"./neuron"
 	"fmt"
 	"math"
 	"strings"
+
+	"./neuron"
 )
 
 const Shift = 0.3
 
-func AnswerFunc_1_0(in []float64) float64 {
+func answerFuncL01V00(in []float64) float64 {
 	if len(in) != 4 {
 		return 0
 	}
@@ -20,7 +21,18 @@ func AnswerFunc_1_0(in []float64) float64 {
 	}
 }
 
-func AnswerFunc_1_11(in []float64) float64 {
+func answerFuncL01V04(in []float64) float64 {
+	if len(in) != 4 {
+		return 0
+	}
+	if (in[0] == 0 || in[2] == 1) && in[1] == 1 || in[1] == 1 && in[3] == 1 {
+		return 1
+	} else {
+		return 0
+	}
+}
+
+func answerFuncL01V11(in []float64) float64 {
 	if len(in) != 4 {
 		return 0
 	}
@@ -31,7 +43,7 @@ func AnswerFunc_1_11(in []float64) float64 {
 	}
 }
 
-func RK_1(in []float64) float64 {
+func rk1(in []float64) float64 {
 	if len(in) != 2 {
 		return 0
 	}
@@ -42,14 +54,21 @@ func RK_1(in []float64) float64 {
 	}
 }
 
-func AnswerFunc_3_0(in []float64) float64 {
+func answerFuncL03V00(in []float64) float64 {
 	if len(in) != 1 {
 		return 0
 	}
 	return 0.5*math.Sin(0.5*in[0]) - 0.5
 }
 
-func calc(name string, learningSet neuron.LearningSet, neuron neuron.Neuron, mode byte) {
+func answerFuncL03V11(in []float64) float64 {
+	if len(in) != 1 {
+		return 0
+	}
+	return math.Tan(in[0])
+}
+
+func lab01(name string, learningSet neuron.LearningSet, neuron neuron.Neuron, mode byte) {
 	fmt.Println("\n--------------------")
 	fmt.Println(strings.ToUpper(name))
 	fmt.Println("--------------------")
@@ -58,33 +77,61 @@ func calc(name string, learningSet neuron.LearningSet, neuron neuron.Neuron, mod
 	neuron.Train(&learningSet, Shift, mode)
 	neuron.PrintInfo()
 
-	//fmt.Println("\nMinimal learning set:")
-	//shortestAnswers := neuron.FindMinAnswers(&learningSet, Shift)
-	//shortestAnswers.PrintInfo()
-	//
-	//fmt.Println("\nTraining on this set:")
-	//neuron.Train(&shortestAnswers, Shift, mode)
-	//neuron.PrintInfo()
+	fmt.Println("\nMinimal learning set:")
+	shortestAnswers := neuron.FindMinAnswers(&learningSet, Shift)
+	shortestAnswers.PrintInfo()
+
+	fmt.Println("\nTraining on this set:")
+	neuron.Train(&shortestAnswers, Shift, mode)
+	neuron.PrintInfo()
+}
+
+func lab03(name string, learningSet neuron.LearningSet, neuron neuron.Neuron, mode byte) {
+	fmt.Println("\n--------------------")
+	fmt.Println(strings.ToUpper(name))
+	fmt.Println("--------------------")
+
+	fmt.Println("\nLearning:")
+	neuron.Train(&learningSet, Shift, mode)
+	neuron.PrintInfo()
+
+	fmt.Println("\nCorrect out:")
+	learningSet.PrintResults()
+	fmt.Println("\nResult out:")
+	neuron.PrintNet(&learningSet)
 }
 
 func main() {
-	//learningSet_1_0 := neuron.CreateBoolLearningSet(AnswerFunc_1_0, 4, 2, 1)
-	//fmt.Println("\nLearning set:")
-	//learningSet_1_0.PrintInfo()
-	//calc("step", learningSet_1_0, neuron.CreateNeuron(&neuron.ActivationStep{}, &neuron.ErrorCount{}, 200), 1)
-	//calc("exponential", learningSet_1_0, neuron.CreateNeuron(&neuron.ActivationExp{}, &neuron.ErrorCount{}, 200), 1)
+	// learningSetL01V00 := neuron.CreateBoolLearningSet(answerFuncL01V00, 4, 2, 1)
+	// fmt.Println("\nLearning set:")
+	// learningSetL01V00.PrintInfo()
+	// lab01("step", learningSetL01V00, neuron.CreateNeuron(&neuron.ActivationStep{}, &neuron.ErrorCount{}, 200), 1)
+	// lab01("exponential", learningSetL01V00, neuron.CreateNeuron(&neuron.ActivationExp{}, &neuron.ErrorCount{}, 200), 1)
 
-	//learningSet_1_11 := neuron.CreateBoolLearningSet(AnswerFunc_1_11, 4, 2, 1)
-	//fmt.Println("\nLearning set:")
-	//learningSet_1_11.PrintInfo()
-	//calc("step", learningSet_1_11, neuron.CreateNeuron(&neuron.ActivationStep{}, &neuron.ErrorCount{}, 200), 1)
-	//calc("exponential", learningSet_1_11, neuron.CreateNeuron(&neuron.ActivationExp{}, &neuron.ErrorCount{}, 200), 1)
+	// learningSetL01V04 := neuron.CreateBoolLearningSet(answerFuncL01V04, 4, 2, 1)
+	// fmt.Println("\nLearning set:")
+	// learningSetL01V04.PrintInfo()
+	// lab01("step", learningSetL01V04, neuron.CreateNeuron(&neuron.ActivationStep{}, &neuron.ErrorCount{}, 200), 1)
+	// lab01("module", learningSetL01V04, neuron.CreateNeuron(&neuron.ActivationModule{}, &neuron.ErrorCount{}, 200), 1)
 
-	//rk_1 := neuron.CreateBoolLearningSet(RK_1, 2, 2, 1)
-	//calc("step", rk_1, neuron.CreateNeuron(&neuron.ActivationStep{}, &neuron.ErrorCount{}, 200), 1)
+	// learningSetL01V11 := neuron.CreateBoolLearningSet(answerFuncL01V11, 4, 2, 1)
+	// fmt.Println("\nLearning set:")
+	// learningSetL01V11.PrintInfo()
+	// lab01("step", learningSetL01V11, neuron.CreateNeuron(&neuron.ActivationStep{}, &neuron.ErrorCount{}, 200), 1)
+	// lab01("exponential", learningSetL01V11, neuron.CreateNeuron(&neuron.ActivationExp{}, &neuron.ErrorCount{}, 200), 1)
 
-	learningSet_3_0 := neuron.CreateFloatLearningSet(AnswerFunc_3_0, 6, -2, 4, 20)
+	// learningSetRk1 := neuron.CreateBoolLearningSet(rk1, 2, 2, 1)
+	// fmt.Println("\nLearning set:")
+	// learningSetRk1.PrintInfo()
+	// lab01("step", learningSetRk1, neuron.CreateNeuron(&neuron.ActivationStep{}, &neuron.ErrorCount{}, 200), 1)
+
+	// learningSetL03V00 := neuron.CreateFloatLearningSet(answerFuncL03V00, 6, -2, 4, 20)
+	// fmt.Println("\nLearning set:")
+	// learningSetL03V00.PrintInfo()
+	// lab03("step", learningSetL03V00, neuron.CreateNeuron(&neuron.ActivationLinear{}, &neuron.ErrorSquare{}, 2000), 1)
+
+	learningSetL03V11 := neuron.CreateFloatLearningSet(answerFuncL03V11, 6, 2, 3, 20)
 	fmt.Println("\nLearning set:")
-	learningSet_3_0.PrintInfo()
-	calc("step", learningSet_3_0, neuron.CreateNeuron(&neuron.ActivationLinear{}, &neuron.ErrorSquare{}, 4000), 1)
+	learningSetL03V11.PrintInfo()
+	lab03("step", learningSetL03V11, neuron.CreateNeuron(&neuron.ActivationLinear{}, &neuron.ErrorSquare{}, 2000), 1)
 }

@@ -28,13 +28,23 @@ func (a *LearningSet) PrintInfo() {
 		fmt.Print("F(")
 		for i, v := range r.input[1:] {
 			if i < len(r.input)-2 {
-				fmt.Printf("%.5v, ", v)
+				fmt.Printf("%v, ", Round(v, ResultAccuracy))
 			} else {
-				fmt.Printf("%.5v", v)
+				fmt.Printf("%v", Round(v, ResultAccuracy))
 			}
 		}
-		fmt.Printf(") = %.5v\n", r.answer)
+		fmt.Printf(") = %v\n", Round(r.answer, ResultAccuracy))
 	}
+}
+
+func (a *LearningSet) PrintResults() {
+	for i, r := range a.data {
+		fmt.Printf("%v", Round(r.answer, ResultAccuracy))
+		if i < len(a.data)-1 {
+			fmt.Print(", ")
+		}
+	}
+	fmt.Println()
 }
 
 func (a *LearningSet) Disable(index int) {
@@ -79,46 +89,6 @@ func CreateBoolLearningSet(answerFunc AnswerFunc, varsCount uint, shiftsCount ui
 	return
 }
 
-type floatParams struct {
-	learningSet *LearningSet
-	answerFunc  AnswerFunc
-	width       uint
-	points      uint
-	begin       float64
-	shift       float64
-	skip        bool
-}
-
-func subFloatLearningSet(params floatParams) {
-	row := make([]float64, params.width+1)
-	row[0] = 1
-	for i := uint(1); i < params.width+1; i++ {
-		row[i] = params.answerFunc([]float64{params.begin})
-		params.begin += params.shift
-	}
-	answer := params.answerFunc([]float64{params.begin})
-	params.begin += params.shift
-
-	for r := uint(1); ; r++ {
-		// Remember result
-		params.learningSet.data = append(params.learningSet.data, Answer{input: row, answer: answer})
-		params.learningSet.skipped = append(params.learningSet.skipped, params.skip)
-
-		if r == params.points-params.width {
-			break
-		}
-
-		// Next row
-		newRow := make([]float64, params.width+1)
-		newRow[0] = 1
-		copy(newRow[1:], row[2:])
-		newRow[len(newRow)-1] = answer
-		row = newRow
-		answer = params.answerFunc([]float64{params.begin})
-		params.begin += params.shift
-	}
-}
-
 // @param width: width of window
 // @param begin: begin of interval
 // @param end: end of interval
@@ -128,21 +98,39 @@ func CreateFloatLearningSet(answerFunc AnswerFunc, width uint, begin float64, en
 		return
 	}
 
+	shift := (end - begin) / float64(points-1)
 	learningSet.varsCount = width + 1
-	params := floatParams{
-		learningSet: &learningSet,
-		answerFunc:  answerFunc,
-		width:       width,
-		points:      points,
-		shift:       (end - begin) / float64(points-1),
+
+	row := make([]float64, width+1)
+	row[0] = 1
+	for i := uint(1); i < width+1; i++ {
+		row[i] = answerFunc([]float64{begin})
+		begin += shift
 	}
+	answer := answerFunc([]float64{begin})
+	begin += shift
 
-	params.begin = begin
-	params.skip = false
-	subFloatLearningSet(params)
+	for r := width; ; r++ {
+		// Remember result
+		learningSet.data = append(learningSet.data, Answer{input: row, answer: answer})
+		if r >= points {
+			learningSet.skipped = append(learningSet.skipped, true)
+		} else {
+			learningSet.skipped = append(learningSet.skipped, false)
+		}
 
-	params.begin = end
-	params.skip = true
-	subFloatLearningSet(params)
+		if r == points*2-1 {
+			break
+		}
+
+		// Next row
+		newRow := make([]float64, width+1)
+		newRow[0] = 1
+		copy(newRow[1:], row[2:])
+		newRow[len(newRow)-1] = answer
+		row = newRow
+		answer = answerFunc([]float64{begin})
+		begin += shift
+	}
 	return
 }

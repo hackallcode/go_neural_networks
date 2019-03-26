@@ -19,15 +19,15 @@ func (n *Neuron) PrintInfo() {
 func (n *Neuron) Train(learningSet *LearningSet, shift float64, mode byte) (isLearned bool) {
 	// Init weights
 	n.weights = make([]float64, learningSet.varsCount)
-	n.age = 0
 
-	for age := uint(0); ; age++ {
+	for n.age = 0; n.age < n.maxAge; {
 		if mode == 1 {
 			fmt.Printf("%v; [%v]; ", n.age, WeightsToString(n.weights, ", "))
 		}
 
 		// Count age
 		results := make([]float64, len(learningSet.data))
+		errorSum := float64(0)
 		for r, answer := range learningSet.data {
 			if learningSet.skipped[r] {
 				continue
@@ -40,10 +40,11 @@ func (n *Neuron) Train(learningSet *LearningSet, shift float64, mode byte) (isLe
 
 			results[r] = n.activationFunc.Result(Round(net, CalcAccuracy))
 			err := float64(answer.answer) - float64(results[r])
+			errorSum += n.errorFunc.Step(results[r], answer.answer)
 
 			if mode == 2 {
 				fmt.Printf("age: %v.%v; w: %v; net: %v; y: %v; err: %v;\n",
-					n.age, r, WeightsToString(n.weights, ", "), Round(net, CalcAccuracy), results[r], err)
+					n.age, r, WeightsToString(n.weights, ", "), Round(net, CalcAccuracy), results[r], Round(err, CalcAccuracy))
 			}
 
 			if Round(err, CalcAccuracy) != 0 {
@@ -53,35 +54,15 @@ func (n *Neuron) Train(learningSet *LearningSet, shift float64, mode byte) (isLe
 				}
 			}
 		}
-		n.age++
-
-		// Count error
-		errorSum := float64(0)
-		for r, answer := range learningSet.data {
-			if learningSet.skipped[r] {
-				continue
-			}
-
-			net := float64(0)
-			for i := uint(0); i < learningSet.varsCount; i++ {
-				net += n.weights[i] * float64(answer.input[i])
-			}
-
-			result := n.activationFunc.Result(Round(net, CalcAccuracy))
-			errorSum += n.errorFunc.Step(result, answer.answer)
-		}
-		errorSum = n.errorFunc.Result(errorSum)
+		errorSum = Round(n.errorFunc.Result(errorSum), CalcAccuracy)
 
 		if mode == 1 {
 			fmt.Printf("[%v]; %v\n", ResultsToString(results, learningSet.skipped, ", "), errorSum)
 		}
 
-		if Round(errorSum, CalcAccuracy) == 0 {
+		n.age++
+		if errorSum == 0 {
 			isLearned = true
-			break
-		}
-		if age == n.maxAge {
-			isLearned = false
 			break
 		}
 	}
@@ -101,21 +82,35 @@ func (n *Neuron) Train(learningSet *LearningSet, shift float64, mode byte) (isLe
 		result := n.activationFunc.Result(Round(net, CalcAccuracy))
 		errorSum += n.errorFunc.Step(result, answer.answer)
 	}
-	errorSum = n.errorFunc.Result(errorSum)
+	errorSum = Round(n.errorFunc.Result(errorSum), CalcAccuracy)
 
 	// Round total values
 	for i := uint(0); i < learningSet.varsCount; i++ {
 		n.weights[i] = Round(n.weights[i], ResultAccuracy)
 	}
 
-	if mode == 1 {
-		fmt.Printf("Checker error: %v; ", errorSum)
+	if mode != 0 && errorSum != 0 {
+		fmt.Printf("Epsilon: %v\n", errorSum)
 	}
 
-	if Round(errorSum, CalcAccuracy) != 0 {
+	if errorSum != 0 {
 		return false
 	}
 	return isLearned
+}
+
+func (n *Neuron) PrintNet(learningSet *LearningSet) {
+	for r, answer := range learningSet.data {
+		net := float64(0)
+		for i := uint(0); i < learningSet.varsCount; i++ {
+			net += n.weights[i] * float64(answer.input[i])
+		}
+		fmt.Print(n.activationFunc.Result(Round(net, ResultAccuracy)))
+		if r < len(learningSet.data)-1 {
+			fmt.Print(", ")
+		}
+	}
+	fmt.Println()
 }
 
 func CreateNeuron(activationFunc IActivationFunc, errorFunc IErrorFunc, maxAge uint) (result Neuron) {

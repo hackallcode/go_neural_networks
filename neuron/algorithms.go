@@ -6,9 +6,9 @@ import (
 	"sync"
 )
 
-/////////////////////
-//     General     //
-/////////////////////
+/*////////////////*/
+/*    General     */
+/*////////////////*/
 
 const CalcAccuracy = 1000000000
 const ResultAccuracy = 1000
@@ -42,9 +42,9 @@ func ResultsToString(results []float64, skipped []bool, separator string) (resul
 	return
 }
 
-////////////////////////////
-// Find min answer matrix //
-////////////////////////////
+/*////////////////////////*/
+/* Find min answer matrix */
+/*////////////////////////*/
 
 type MinAnswerParams struct {
 	// Input params
