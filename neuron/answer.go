@@ -14,16 +14,16 @@ type Answer struct {
 
 type LearningSet struct {
 	varsCount uint
-	skipped   []bool
+	isTest    []bool
 	data      []Answer
 }
 
 func (a *LearningSet) PrintInfo() {
 	for i, r := range a.data {
-		if a.skipped[i] {
-			fmt.Print("[ ]: ")
+		if a.isTest[i] {
+			fmt.Print("[L]: ")
 		} else {
-			fmt.Print("[X]: ")
+			fmt.Print("[T]: ")
 		}
 		fmt.Print("F(")
 		for i, v := range r.input[1:] {
@@ -48,11 +48,11 @@ func (a *LearningSet) PrintResults() {
 }
 
 func (a *LearningSet) Disable(index int) {
-	a.skipped[index] = true
+	a.isTest[index] = true
 }
 
 func (a *LearningSet) Enable(index int) {
-	a.skipped[index] = false
+	a.isTest[index] = false
 }
 
 // @param varsCount: number of variables
@@ -62,7 +62,7 @@ func CreateBoolLearningSet(answerFunc AnswerFunc, varsCount uint, shiftsCount ui
 	rowsCount := uint(math.Pow(float64(shiftsCount), float64(varsCount)))
 
 	learningSet.varsCount = varsCount + 1
-	learningSet.skipped = make([]bool, rowsCount)
+	learningSet.isTest = make([]bool, rowsCount)
 
 	row := make([]float64, varsCount)
 	for r := uint(0); r < rowsCount; r++ {
@@ -114,9 +114,9 @@ func CreateFloatLearningSet(answerFunc AnswerFunc, width uint, begin float64, en
 		// Remember result
 		learningSet.data = append(learningSet.data, Answer{input: row, answer: answer})
 		if r >= points {
-			learningSet.skipped = append(learningSet.skipped, true)
+			learningSet.isTest = append(learningSet.isTest, true)
 		} else {
-			learningSet.skipped = append(learningSet.skipped, false)
+			learningSet.isTest = append(learningSet.isTest, false)
 		}
 
 		if r == points*2-1 {

@@ -65,9 +65,9 @@ type MinAnswerParams struct {
 func FindMinAnswersIteration(learningSet *LearningSet, begin int, count uint, params MinAnswerParams) {
 	defer params.waiter.Done()
 
-	for i := begin; i < len(learningSet.skipped); i++ {
-		// If must be skipped OR already exist
-		if params.inSkipped[i] || !learningSet.skipped[i] {
+	for i := begin; i < len(learningSet.isTest); i++ {
+		// If must be isTest OR already exist
+		if params.inSkipped[i] || !learningSet.isTest[i] {
 			continue
 		}
 
@@ -80,9 +80,9 @@ func FindMinAnswersIteration(learningSet *LearningSet, begin int, count uint, pa
 
 			// ... and answers set
 			currentAnswers := *learningSet
-			currentAnswers.skipped = make([]bool, len(learningSet.skipped))
-			copy(currentAnswers.skipped, learningSet.skipped)
-			currentAnswers.skipped[i] = false
+			currentAnswers.isTest = make([]bool, len(learningSet.isTest))
+			copy(currentAnswers.isTest, learningSet.isTest)
+			currentAnswers.isTest[i] = false
 
 			// If correct answers write result
 			if neuron.Train(&currentAnswers, params.inShift, 0) {
@@ -103,15 +103,15 @@ func FindMinAnswersIteration(learningSet *LearningSet, begin int, count uint, pa
 
 func (n *Neuron) FindMinAnswers(learningSet *LearningSet, shift float64) LearningSet {
 	beginAnswers := *learningSet
-	beginAnswers.skipped = make([]bool, len(learningSet.skipped))
-	for i := range learningSet.skipped {
-		beginAnswers.skipped[i] = true
+	beginAnswers.isTest = make([]bool, len(learningSet.isTest))
+	for i := range learningSet.isTest {
+		beginAnswers.isTest[i] = true
 	}
 
-	outCount := uint(len(learningSet.skipped))
+	outCount := uint(len(learningSet.isTest))
 	resultLearningSet := *learningSet
 	params := MinAnswerParams{
-		inSkipped: learningSet.skipped,
+		inSkipped: learningSet.isTest,
 		inNeuron:  *n,
 		inShift:   shift,
 

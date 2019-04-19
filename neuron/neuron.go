@@ -10,10 +10,11 @@ type Neuron struct {
 	weights        []float64
 	age            uint
 	maxAge         uint
+	Epsilon        float64
 }
 
 func (n *Neuron) PrintInfo() {
-	fmt.Printf("Age: %v, Weights: [%v]\n", n.age, WeightsToString(n.weights, ", "))
+	fmt.Printf("age: %v, Epsilon: %v, Weights: [%v]\n", n.age, n.Epsilon, WeightsToString(n.weights, ", "))
 }
 
 func (n *Neuron) Train(learningSet *LearningSet, shift float64, mode byte) (isLearned bool) {
@@ -29,7 +30,7 @@ func (n *Neuron) Train(learningSet *LearningSet, shift float64, mode byte) (isLe
 		results := make([]float64, len(learningSet.data))
 		errorSum := float64(0)
 		for r, answer := range learningSet.data {
-			if learningSet.skipped[r] {
+			if learningSet.isTest[r] {
 				continue
 			}
 
@@ -43,7 +44,7 @@ func (n *Neuron) Train(learningSet *LearningSet, shift float64, mode byte) (isLe
 			errorSum += n.errorFunc.Step(results[r], answer.answer)
 
 			if mode == 2 {
-				fmt.Printf("age: %v.%v; w: %v; net: %v; y: %v; err: %v;\n",
+				fmt.Printf("age: %v.%v; w: %v; net: %v; y: %v; Epsilon: %v;\n",
 					n.age, r, WeightsToString(n.weights, ", "), Round(net, CalcAccuracy), results[r], Round(err, CalcAccuracy))
 			}
 
@@ -57,7 +58,7 @@ func (n *Neuron) Train(learningSet *LearningSet, shift float64, mode byte) (isLe
 		errorSum = Round(n.errorFunc.Result(errorSum), CalcAccuracy)
 
 		if mode == 1 {
-			fmt.Printf("[%v]; %v\n", ResultsToString(results, learningSet.skipped, ", "), errorSum)
+			fmt.Printf("[%v]; %v\n", ResultsToString(results, learningSet.isTest, ", "), errorSum)
 		}
 
 		n.age++
@@ -68,9 +69,9 @@ func (n *Neuron) Train(learningSet *LearningSet, shift float64, mode byte) (isLe
 	}
 
 	// Count errors on non-teaching sets
-	errorSum := float64(0)
+	n.Epsilon = float64(0)
 	for r, answer := range learningSet.data {
-		if !learningSet.skipped[r] {
+		if !learningSet.isTest[r] {
 			continue
 		}
 
@@ -80,20 +81,16 @@ func (n *Neuron) Train(learningSet *LearningSet, shift float64, mode byte) (isLe
 		}
 
 		result := n.activationFunc.Result(Round(net, CalcAccuracy))
-		errorSum += n.errorFunc.Step(result, answer.answer)
+		n.Epsilon += n.errorFunc.Step(result, answer.answer)
 	}
-	errorSum = Round(n.errorFunc.Result(errorSum), CalcAccuracy)
+	n.Epsilon = Round(n.errorFunc.Result(n.Epsilon), CalcAccuracy)
 
 	// Round total values
 	for i := uint(0); i < learningSet.varsCount; i++ {
 		n.weights[i] = Round(n.weights[i], ResultAccuracy)
 	}
 
-	if mode != 0 && errorSum != 0 {
-		fmt.Printf("Epsilon: %v\n", errorSum)
-	}
-
-	if errorSum != 0 {
+	if n.Epsilon != 0 {
 		return false
 	}
 	return isLearned
