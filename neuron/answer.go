@@ -21,9 +21,9 @@ type LearningSet struct {
 func (a *LearningSet) PrintInfo() {
 	for i, r := range a.data {
 		if a.isTest[i] {
-			fmt.Print("[L]: ")
+			fmt.Print("[ ]: ")
 		} else {
-			fmt.Print("[T]: ")
+			fmt.Print("[L]: ")
 		}
 		fmt.Print("F(")
 		for i, v := range r.input[1:] {
@@ -49,6 +49,12 @@ func (a *LearningSet) PrintResults() {
 
 func (a *LearningSet) Disable(index int) {
 	a.isTest[index] = true
+}
+
+func (a *LearningSet) DisableByArray(indexes []int) {
+	for _, i := range indexes {
+		a.isTest[i] = true
+	}
 }
 
 func (a *LearningSet) Enable(index int) {
@@ -79,6 +85,49 @@ func CreateBoolLearningSet(answerFunc AnswerFunc, varsCount uint, shiftsCount ui
 		for i := int(varsCount - 1); i >= 0; i-- {
 			row[i] += float64(shift)
 			if row[i] >= float64(shiftsCount)*float64(shift) {
+				row[i] = 0
+			} else {
+				break
+			}
+		}
+
+	}
+	return
+}
+
+// @param varsCount: number of variables
+// @param shiftsCount: number of possible values
+// @param shift: difference between neighboring values
+func CreateRBFBoolLearningSet(answerFunc AnswerFunc, varsCount uint, centers [][]float64) (learningSet LearningSet) {
+	rbfCount := len(centers)
+	rowsCount := uint(math.Pow(float64(2), float64(varsCount)))
+
+	learningSet.varsCount = uint(rbfCount + 1)
+	learningSet.isTest = make([]bool, rowsCount)
+
+	row := make([]float64, varsCount)
+	for r := uint(0); r < rowsCount; r++ {
+		currInput := make([]float64, learningSet.varsCount)
+		for j := range currInput {
+			if j == 0 {
+				currInput[j] = 1
+				continue
+			}
+
+			currInput[j] = 0
+			for i := uint(0); i < varsCount; i++ {
+				currInput[j] += math.Pow(row[i] - centers[j - 1][i], 2)
+			}
+			currInput[j] = math.Exp(-currInput[j])
+		}
+
+		// Remember result
+		learningSet.data = append(learningSet.data, Answer{input: currInput, answer: answerFunc(row)})
+
+		// Result next row
+		for i := int(varsCount - 1); i >= 0; i-- {
+			row[i] += 1
+			if row[i] >= float64(2) {
 				row[i] = 0
 			} else {
 				break
