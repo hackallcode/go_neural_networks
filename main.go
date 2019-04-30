@@ -125,6 +125,14 @@ func lab03Charts(learningSet neuron.LearningSet) {
 	}
 }
 
+func lab06(name string, x, t []float64, njm neuron.NJM, mode byte) {
+	fmt.Println("\n--------------------")
+	fmt.Println(strings.ToUpper(name))
+	fmt.Println("--------------------")
+
+	njm.Train(x, t, 1, mode)
+}
+
 func main() {
 	// learningSetL01V00 := neuron.CreateBoolLearningSet(answerFuncL01V00, 4, 2, 1)
 	// fmt.Println("\nLearning set:")
@@ -154,9 +162,15 @@ func main() {
 	// learningSetL03V00.PrintInfo()
 	// lab03("step", learningSetL03V00, neuron.CreateNeuron(&neuron.ActivationLinear{}, &neuron.ErrorSquare{}, 2000), 1)
 
-	learningSetL03V11 := neuron.CreateFloatLearningSet(answerFuncL03V11, 6, 2, 3, 20)
+	// learningSetL03V11 := neuron.CreateFloatLearningSet(answerFuncL03V11, 6, 2, 3, 20)
 	// fmt.Println("\nLearning set:")
 	// learningSetL03V11.PrintInfo()
 	// lab03("step", learningSetL03V11, neuron.CreateNeuron(&neuron.ActivationLinear{}, &neuron.ErrorSquare{}, 2000), 1)
-	lab03Charts(learningSetL03V11)
+	// lab03Charts(learningSetL03V11)
+
+	// lab06("exponential", []float64{0.3, -0.1, 0.9}, []float64{0.1, -0.6, 0.2, 0.7},
+	// 	neuron.CreateNJM(3, 3, 4, 0, &neuron.ActivationExpExp{}, &neuron.ErrorSquare{}, 1000), 1)
+
+	lab06("exponential", []float64{-.3}, []float64{-.3, .1, .1},
+		neuron.CreateNJM(1, 1, 3, 0.5, &neuron.ActivationExpExp{}, &neuron.ErrorSquare{}, 1000), 1)
 }

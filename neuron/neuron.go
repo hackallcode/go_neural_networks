@@ -13,8 +13,18 @@ type Neuron struct {
 	Epsilon        float64
 }
 
-func (n *Neuron) PrintInfo() {
-	fmt.Printf("age: %v, Epsilon: %v, Weights: [%v]\n", n.age, n.Epsilon, WeightsToString(n.weights, ", "))
+func CreateNeuron(activationFunc IActivationFunc, errorFunc IErrorFunc, maxAge uint) (result Neuron) {
+	result.activationFunc = activationFunc
+	result.errorFunc = errorFunc
+	result.maxAge = maxAge
+	return
+}
+
+func CopyNeuron(neuron Neuron) (result Neuron) {
+	result.activationFunc = neuron.activationFunc
+	result.errorFunc = neuron.errorFunc
+	result.maxAge = neuron.maxAge
+	return
 }
 
 func (n *Neuron) Train(learningSet *LearningSet, shift float64, mode byte) (isLearned bool) {
@@ -96,6 +106,10 @@ func (n *Neuron) Train(learningSet *LearningSet, shift float64, mode byte) (isLe
 	return isLearned
 }
 
+func (n *Neuron) PrintInfo() {
+	fmt.Printf("age: %v, Epsilon: %v, Weights: [%v]\n", n.age, n.Epsilon, WeightsToString(n.weights, ", "))
+}
+
 func (n *Neuron) PrintNet(learningSet *LearningSet) {
 	for r, answer := range learningSet.data {
 		net := float64(0)
@@ -108,18 +122,4 @@ func (n *Neuron) PrintNet(learningSet *LearningSet) {
 		}
 	}
 	fmt.Println()
-}
-
-func CreateNeuron(activationFunc IActivationFunc, errorFunc IErrorFunc, maxAge uint) (result Neuron) {
-	result.activationFunc = activationFunc
-	result.errorFunc = errorFunc
-	result.maxAge = maxAge
-	return
-}
-
-func CopyNeuron(neuron Neuron) (result Neuron) {
-	result.activationFunc = neuron.activationFunc
-	result.errorFunc = neuron.errorFunc
-	result.maxAge = neuron.maxAge
-	return
 }

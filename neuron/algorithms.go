@@ -30,6 +30,16 @@ func WeightsToString(weights []float64, separator string) (result string) {
 	return
 }
 
+func AllResultsToString(results []float64, separator string) (result string) {
+	for _, v := range results {
+		result += strconv.FormatFloat(Round(v, ResultAccuracy), 'f', -1, 64) + separator
+	}
+	if len(result) >= len(separator) {
+		result = result[:len(result)-len(separator)]
+	}
+	return
+}
+
 func ResultsToString(results []float64, skipped []bool, separator string) (result string) {
 	for i, v := range results {
 		if !skipped[i] {

@@ -64,3 +64,17 @@ func (a *ActivationLinear) Result(net float64) float64 {
 func (a *ActivationLinear) Derivative(net float64) float64 {
 	return 1
 }
+
+type ActivationExpExp struct{}
+
+func (a *ActivationExpExp) Count(net float64) float64 {
+	return (1 - math.Exp(-net)) / (1 + math.Exp(-net))
+}
+
+func (a *ActivationExpExp) Result(net float64) float64 {
+	return a.Count(net)
+}
+
+func (a *ActivationExpExp) Derivative(net float64) float64 {
+	return 0.5 * (1 - math.Pow(a.Count(net), 2))
+}
