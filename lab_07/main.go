@@ -102,7 +102,7 @@ func main() {
 
     fmt.Println()
     resBad3 := rnn123.Detect(rnn.BWLetterToVector([]string{
-        " * ",
+        " **",
         "  *",
         " **",
         "  *",

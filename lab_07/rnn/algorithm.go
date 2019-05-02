@@ -4,6 +4,11 @@ import (
     "fmt"
 )
 
+const (
+    BlackChar = '*'
+    WhiteChar = ' '
+)
+
 func MatrixToVector(matrix [][]int, w, h uint) []int {
     vector := make([]int, w*h)
     for j := uint(0); j < h; j++ {

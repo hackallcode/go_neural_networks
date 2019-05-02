@@ -4,11 +4,6 @@ import (
     "fmt"
 )
 
-const (
-    BlackChar = '*'
-    WhiteChar = ' '
-)
-
 type RNN struct {
     w      [][]int
     k      uint
