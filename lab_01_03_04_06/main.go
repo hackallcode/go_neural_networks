@@ -5,7 +5,7 @@ import (
 	"math"
 	"strings"
 
-	"./neuron"
+	"labs/neuron"
 )
 
 const SmallShift = 0.3
@@ -189,7 +189,7 @@ func main() {
 	// fmt.Println("\nLearning set:")
 	// learningSetL03V11.PrintInfo()
 	// lab03("step", learningSetL03V11, neuron.CreateNeuron(&neuron.ActivationLinear{}, &neuron.ErrorSquare{}, 2000), 1)
-	// lab03Charts(answerFuncL03V11)
+	// lab03Charts(answerFuncL03V11, 4, 2, 3, 20)
 
 	// learningSetL04V00 := neuron.CreateRBFBoolLearningSet(answerFuncL01V00, 4, [][]float64{
 	// 	{0, 0, 1, 1},
