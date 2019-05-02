@@ -42,7 +42,6 @@ func CreateRNN(x [][]int, k uint, maxAge uint) (result RNN) {
 }
 
 func (n *RNN) PrintWeights() {
-    fmt.Println("Weights:")
     for i := uint(0); i < n.k; i++ {
         for j := uint(0); j < n.k; j++ {
             if j == n.k-1 {

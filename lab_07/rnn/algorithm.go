@@ -42,7 +42,6 @@ func VectorToBWLetter(vector []int, w, h uint) []string {
 }
 
 func PrintBWLetterByVector(vector []int, w, h uint) {
-    fmt.Println("Result:")
     for j := uint(0); j < h; j++ {
         for i := uint(0); i < w; i++ {
             if vector[h*i+j] > 0 {
