@@ -33,7 +33,7 @@ func (n *Neuron) Train(learningSet *LearningSet, shift float64, mode byte) (isLe
 
 	for n.age = 0; n.age < n.maxAge; {
 		if mode == 1 {
-			fmt.Printf("%v; [%v]; ", n.age, WeightsToString(n.weights, ", "))
+			fmt.Printf("%v; [%v]; ", n.age + 1, WeightsToString(n.weights, ", "))
 		}
 
 		// Count age

@@ -92,36 +92,39 @@ func lab03(name string, learningSet neuron.LearningSet, neuron neuron.Neuron, mo
 	fmt.Println("--------------------")
 
 	fmt.Println("\nLearning:")
-	neuron.Train(&learningSet, Shift, mode)
+	neuron.Train(&learningSet, 1, mode)
 	neuron.PrintInfo()
 
 	fmt.Println("\nCorrect out:")
 	learningSet.PrintResults()
 	fmt.Println("\nResult out:")
 	neuron.PrintNet(&learningSet)
+	fmt.Println()
 }
 
-func lab03Charts(learningSet neuron.LearningSet) {
-	fmt.Println("Epsilon/Age")
-	for maxAge := uint(10); maxAge < 4000; maxAge += 10 {
+func lab03Charts(answerFunc neuron.AnswerFunc, width uint, begin float64, end float64, points uint) {
+	fmt.Println("Epsilon (Age)")
+	learningSet := neuron.CreateFloatLearningSet(answerFunc, width, begin, end, points)
+	for maxAge := uint(0); maxAge < 500; maxAge += 10 {
 		n := neuron.CreateNeuron(&neuron.ActivationLinear{}, &neuron.ErrorSquare{}, maxAge)
-		n.Train(&learningSet, Shift, 0)
-		fmt.Printf("%v,%v\n", n.Epsilon, maxAge)
+		n.Train(&learningSet, 1, 0)
+		fmt.Printf("%v,%v\n", maxAge, n.Epsilon)
 	}
 
-	fmt.Println("\nEpsilon/Shift")
+	fmt.Println("\nEpsilon (Shift)")
+	learningSet = neuron.CreateFloatLearningSet(answerFunc, width, begin, end, points)
 	for shift := 0.01; shift <= 1; shift = neuron.Round(shift+.01, neuron.CalcAccuracy) {
-		n := neuron.CreateNeuron(&neuron.ActivationLinear{}, &neuron.ErrorSquare{}, 500)
+		n := neuron.CreateNeuron(&neuron.ActivationLinear{}, &neuron.ErrorSquare{}, 200)
 		n.Train(&learningSet, shift, 0)
-		fmt.Printf("%v,%v\n", n.Epsilon, shift)
+		fmt.Printf("%v,%v\n", shift, n.Epsilon)
 	}
 
-	fmt.Println("\nEpsilon/Width")
+	fmt.Println("\nEpsilon (Width)")
 	for width := uint(1); width < 20; width++ {
-		learningSet1 := neuron.CreateFloatLearningSet(answerFuncL03V11, width, 2, 3, 20)
+		learningSet = neuron.CreateFloatLearningSet(answerFunc, width, begin, end, points)
 		n := neuron.CreateNeuron(&neuron.ActivationLinear{}, &neuron.ErrorSquare{}, 500)
-		n.Train(&learningSet1, Shift, 0)
-		fmt.Printf("%v,%v\n", n.Epsilon, width)
+		n.Train(&learningSet, 0.1, 0)
+		fmt.Printf("%v,%v\n", width, n.Epsilon)
 	}
 }
 
@@ -175,19 +178,21 @@ func main() {
 	// learningSetRk1.PrintInfo()
 	// lab01("step", learningSetRk1, neuron.CreateNeuron(&neuron.ActivationStep{}, &neuron.ErrorCount{}, 200), 1)
 
-	// learningSetL03V00 := neuron.CreateFloatLearningSet(answerFuncL03V00, 6, -2, 4, 20)
+	// learningSetL03V00 := neuron.CreateFloatLearningSet(answerFuncL03V00, 7, -2, 4, 20)
 	// fmt.Println("\nLearning set:")
 	// learningSetL03V00.PrintInfo()
-	// lab03("step", learningSetL03V00, neuron.CreateNeuron(&neuron.ActivationLinear{}, &neuron.ErrorSquare{}, 2000), 1)
+	// lab03("step", learningSetL03V00, neuron.CreateNeuron(&neuron.ActivationLinear{}, &neuron.ErrorSquare{}, 100), 1)
+	// lab03("step", learningSetL03V00, neuron.CreateNeuron(&neuron.ActivationLinear{}, &neuron.ErrorSquare{}, 300), 1)
+	// lab03Charts(answerFuncL03V00, 7, -2, 4, 20)
 
-	// learningSetL03V11 := neuron.CreateFloatLearningSet(answerFuncL03V11, 6, 2, 3, 20)
+	// learningSetL03V11 := neuron.CreateFloatLearningSet(answerFuncL03V11, 4, 2, 3, 20)
 	// fmt.Println("\nLearning set:")
 	// learningSetL03V11.PrintInfo()
 	// lab03("step", learningSetL03V11, neuron.CreateNeuron(&neuron.ActivationLinear{}, &neuron.ErrorSquare{}, 2000), 1)
-	// lab03Charts(learningSetL03V11)
+	// lab03Charts(answerFuncL03V11)
 
 	// lab06("exponential", []float64{0.3, -0.1, 0.9}, []float64{0.1, -0.6, 0.2, 0.7},
-	// neuron.CreateNJM(3, 3, 4, 0, &neuron.ActivationExpExp{}, &neuron.ErrorSquare{}, 1000), 1)
+	// neuron.CreateNJM(3, 3, 4, 0.5, &neuron.ActivationExpExp{}, &neuron.ErrorSquare{}, 1000), 2)
 
 	// lab06("exponential", []float64{-.3}, []float64{-.3, .1, .1},
 	// neuron.CreateNJM(1, 1, 3, 0.5, &neuron.ActivationExpExp{}, &neuron.ErrorSquare{}, 1000), 1)
@@ -200,19 +205,19 @@ func main() {
 	// 	{0, 1, 1, 1},
 	// 	{1, 0, 1, 1},
 	// })
-    // learningSetL04V00.DisableByArray([]int{0, 2, 3, 4, 5, 6, 8, 9, 12, 13, 15})
+    // // learningSetL04V00.DisableByArray([]int{0, 2, 3, 4, 5, 6, 8, 9, 12, 13, 15})
 	// fmt.Println("\nLearning set:")
 	// learningSetL04V00.PrintInfo()
 	// lab04("step", learningSetL04V00, neuron.CreateNeuron(&neuron.ActivationStep{}, &neuron.ErrorCount{}, 200), 1)
 	// lab04("exponential", learningSetL04V00, neuron.CreateNeuron(&neuron.ActivationExp{}, &neuron.ErrorCount{}, 200), 1)
 
-    learningSetL04V11 := neuron.CreateRBFBoolLearningSet(answerFuncL01V11, 4, [][]float64{
-        {0, 1, 1, 1},
-        {1, 0, 1, 1},
-        {1, 1, 1, 1},
-    })
-    fmt.Println("\nLearning set:")
-    learningSetL04V11.PrintInfo()
-    lab04("step", learningSetL04V11, neuron.CreateNeuron(&neuron.ActivationStep{}, &neuron.ErrorCount{}, 200), 1)
-    lab04("exponential", learningSetL04V11, neuron.CreateNeuron(&neuron.ActivationExp{}, &neuron.ErrorCount{}, 200), 1)
+    // learningSetL04V11 := neuron.CreateRBFBoolLearningSet(answerFuncL01V11, 4, [][]float64{
+    //     {0, 1, 1, 1},
+    //     {1, 0, 1, 1},
+    //     {1, 1, 1, 1},
+    // })
+    // fmt.Println("\nLearning set:")
+    // learningSetL04V11.PrintInfo()
+    // lab04("step", learningSetL04V11, neuron.CreateNeuron(&neuron.ActivationStep{}, &neuron.ErrorCount{}, 200), 1)
+    // lab04("exponential", learningSetL04V11, neuron.CreateNeuron(&neuron.ActivationExp{}, &neuron.ErrorCount{}, 200), 1)
 }

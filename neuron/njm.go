@@ -42,8 +42,8 @@ func CreateNJM(n, j, m uint, w float64, activationFunc IActivationFunc, errorFun
 
 func (l *NJM) Train(x, t []float64, shift float64, mode byte) (isLearned bool) {
 	for l.age = 0; l.age < l.maxAge; l.age++ {
-		if mode == 1 {
-			fmt.Printf("age: %v; ", l.age)
+		if mode >= 2 {
+			fmt.Printf("age: %v; ", l.age + 1)
 			for j := uint(0); j < l.j; j++ {
 				fmt.Printf("h: [%v]; ", WeightsToString(l.hidden[j], ", "))
 			}
@@ -79,7 +79,7 @@ func (l *NJM) Train(x, t []float64, shift float64, mode byte) (isLearned bool) {
 			errors[m] = (float64(t[m]) - float64(results[m])) * l.activationFunc.Derivative(nets[m])
 			errorSum += l.errorFunc.Step(results[m], t[m])
 		}
-		errorSum = Round(l.errorFunc.Result(errorSum), ResultAccuracy)
+		errorSum = Round(l.errorFunc.Result(errorSum), CalcAccuracy)
 
 		for j := uint(0); j < l.j; j++ {
 			sum := float64(0)
@@ -103,12 +103,12 @@ func (l *NJM) Train(x, t []float64, shift float64, mode byte) (isLearned bool) {
 			}
 		}
 
-		if mode == 1 {
+		if mode >= 1 {
 			fmt.Printf("y: [%v]; Epsilon: %v;\n", AllResultsToString(results, ", "), errorSum)
 		}
 
-		if errorSum == 0 {
-			if mode == 1 {
+		if Round(errorSum, ResultAccuracy) == 0 {
+			if mode >= 1 {
 				for j := uint(0); j < l.j; j++ {
 					fmt.Printf("h: [%v]; ", WeightsToString(l.hidden[j], ", "))
 				}
@@ -119,7 +119,7 @@ func (l *NJM) Train(x, t []float64, shift float64, mode byte) (isLearned bool) {
 			return true
 		}
 	}
-	if mode == 1 {
+	if mode >= 1 {
 		for j := uint(0); j < l.j; j++ {
 			fmt.Printf("h: [%v]; ", WeightsToString(l.hidden[j], ", "))
 		}
