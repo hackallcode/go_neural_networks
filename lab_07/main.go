@@ -2,33 +2,34 @@ package main
 
 import (
     "fmt"
+    "strconv"
 
     "labs/rnn"
 )
 
 var (
-    letter1 = rnn.BWLetterToVector([]string{
+    letter1 = rnn.CreateLetterFromText([]string{
         " * ",
         "** ",
         " * ",
         " * ",
         "***",
     }, 3, 5)
-    letter2 = rnn.BWLetterToVector([]string{
+    letter2 = rnn.CreateLetterFromText([]string{
         "***",
         "  *",
         "***",
         "*  ",
         "***",
     }, 3, 5)
-    letter3 = rnn.BWLetterToVector([]string{
+    letter3 = rnn.CreateLetterFromText([]string{
         "***",
         "  *",
         " **",
         "  *",
         "***",
     }, 3, 5)
-    letterS = rnn.BWLetterToVector([]string{
+    letterS = rnn.CreateLetterFromText([]string{
         " *** ",
         "*   *",
         "*    ",
@@ -37,7 +38,7 @@ var (
         "*   *",
         " *** ",
     }, 5, 7)
-    letterT = rnn.BWLetterToVector([]string{
+    letterT = rnn.CreateLetterFromText([]string{
         "*****",
         "  *  ",
         "  *  ",
@@ -46,7 +47,7 @@ var (
         "  *  ",
         "  *  ",
     }, 5, 7)
-    letterU = rnn.BWLetterToVector([]string{
+    letterU = rnn.CreateLetterFromText([]string{
         "*   *",
         "*   *",
         "*   *",
@@ -57,82 +58,70 @@ var (
     }, 5, 7)
 )
 
+func DelectLetter(lettersRNN *rnn.RNN, letter rnn.Letter, sync bool, printMode uint8) {
+    res := lettersRNN.DetectByLetter(letter, sync, printMode)
+    before := letter.ToText()
+    after := res.ToText()
+
+    contentWidth := int(float64(letter.Width() + 10) / 2)
+    strWidth := strconv.FormatInt(int64(contentWidth), 10)
+    spaceAfter := ""
+    for i := 0; i < 10 - contentWidth; i++ {
+        spaceAfter += " "
+    }
+
+    fmt.Println()
+    fmt.Println("+---------------------+")
+    fmt.Println("|  Before  |  After   |")
+    fmt.Println("+---------------------+")
+    for i := uint(0); i < uint(len(before)); i++ {
+        fmt.Printf("|%"+strWidth+"v%v|%"+strWidth+"v%v|\n", before[i], spaceAfter, after[i], spaceAfter)
+    }
+    fmt.Println("+---------------------+")
+}
+
 func main() {
     fmt.Println()
-    rnn123 := rnn.CreateRNN([][]int{letter1, letter2, letter3}, 15, 100)
+    rnn123 := rnn.CreateRNNByLetters([]rnn.Letter{letter1, letter2, letter3}, 15, 100)
     fmt.Println("123 weights:")
     rnn123.PrintWeights()
 
-    fmt.Println()
-    res1 := rnn123.Detect(letter1, true, 1)
-    fmt.Println("Letter 1:")
-    rnn.PrintBWLetterByVector(res1, 3, 5)
+    DelectLetter(&rnn123, letter1, true, 0)
+    DelectLetter(&rnn123, letter2, true, 0)
+    DelectLetter(&rnn123, letter3, true, 0)
 
-    fmt.Println()
-    res2 := rnn123.Detect(letter2, true, 1)
-    fmt.Println("Letter 2:")
-    rnn.PrintBWLetterByVector(res2, 3, 5)
-
-    fmt.Println()
-    res3 := rnn123.Detect(letter3, true, 1)
-    fmt.Println("Letter 3:")
-    rnn.PrintBWLetterByVector(res3, 3, 5)
-
-    fmt.Println()
-    resBad1 := rnn123.Detect(rnn.BWLetterToVector([]string{
+    DelectLetter(&rnn123, rnn.CreateLetterFromText([]string{
         "** ",
         " * ",
         " * ",
         " * ",
         " * ",
-    }, 3, 5), true, 1)
-    fmt.Println("Bad letter 1:")
-    rnn.PrintBWLetterByVector(resBad1, 3, 5)
-
-    fmt.Println()
-    resBad2 := rnn123.Detect(rnn.BWLetterToVector([]string{
+    }, 3, 5), true, 0)
+    DelectLetter(&rnn123, rnn.CreateLetterFromText([]string{
         " **",
         "   ",
         "***",
         "*  ",
         "** ",
-    }, 3, 5), true, 1)
-    fmt.Println("Bad letter 2:")
-    rnn.PrintBWLetterByVector(resBad2, 3, 5)
-
-    fmt.Println()
-    resBad3 := rnn123.Detect(rnn.BWLetterToVector([]string{
+    }, 3, 5), true, 0)
+    DelectLetter(&rnn123, rnn.CreateLetterFromText([]string{
         " **",
         "  *",
         " **",
         "  *",
         " **",
-    }, 3, 5), true, 1)
-    fmt.Println("Bad letter 3:")
-    rnn.PrintBWLetterByVector(resBad3, 3, 5)
+    }, 3, 5), true, 0)
 
     // fmt.Println()
-    // rnnSTU := rnn.CreateRNN([][]int{letterS, letterT, letterU}, 35, 100)
+    // rnnSTU := rnn.CreateRNNByLetters([]rnn.Letter{letterS, letterT, letterU}, 35, 100)
     // fmt.Println("STU weights:")
     // rnnSTU.PrintWeights()
     //
-    // fmt.Println()
-    // resS := rnnSTU.Detect(letterS, false, 0)
-    // fmt.Println("Letter S:")
-    // rnn.PrintBWLetterByVector(resS, 5, 7)
+    // DelectLetter(&rnnSTU, letterS, false, 0)
+    // DelectLetter(&rnnSTU, letterT, false, 0)
+    // DelectLetter(&rnnSTU, letterU, false, 0)
     //
-    // fmt.Println()
-    // resT := rnnSTU.Detect(letterT, false, 0)
-    // fmt.Println("Letter T:")
-    // rnn.PrintBWLetterByVector(resT, 5, 7)
-    //
-    // fmt.Println()
-    // resU := rnnSTU.Detect(letterU, false, 0)
-    // fmt.Println("Letter U:")
-    // rnn.PrintBWLetterByVector(resU, 5, 7)
-    //
-    // fmt.Println()
-    // resBadS := rnnSTU.Detect(rnn.BWLetterToVector([]string{
+    // DelectLetter(&rnnSTU, rnn.CreateLetterFromText([]string{
     //     "     ",
     //     " *** ",
     //     "*    ",
@@ -141,11 +130,7 @@ func main() {
     //     "    *",
     //     " *** ",
     // }, 5, 7), false, 0)
-    // fmt.Println("Bad letter S:")
-    // rnn.PrintBWLetterByVector(resBadS, 5, 7)
-    //
-    // fmt.Println()
-    // resBadT := rnnSTU.Detect(rnn.BWLetterToVector([]string{
+    // DelectLetter(&rnnSTU, rnn.CreateLetterFromText([]string{
     //     "     ",
     //     "     ",
     //     " *** ",
@@ -154,11 +139,7 @@ func main() {
     //     "     ",
     //     "     ",
     // }, 5, 7), false, 0)
-    // fmt.Println("Bad letter T:")
-    // rnn.PrintBWLetterByVector(resBadT, 5, 7)
-    //
-    // fmt.Println()
-    // resBadU := rnnSTU.Detect(rnn.BWLetterToVector([]string{
+    // DelectLetter(&rnnSTU, rnn.CreateLetterFromText([]string{
     //     "     ",
     //     "     ",
     //     "*   *",
@@ -167,6 +148,4 @@ func main() {
     //     " *** ",
     //     "     ",
     // }, 5, 7), false, 0)
-    // fmt.Println("Bad letter U:")
-    // rnn.PrintBWLetterByVector(resBadU, 5, 7)
 }

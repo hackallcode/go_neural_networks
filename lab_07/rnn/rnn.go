@@ -36,6 +36,14 @@ func CreateRNN(x [][]int, k uint, maxAge uint) (result RNN) {
     return
 }
 
+func CreateRNNByLetters(letters []Letter, k uint, maxAge uint) (result RNN) {
+    x := make([][]int, len(letters))
+    for l := range letters {
+        x[l] = letters[l].data
+    }
+    return CreateRNN(x, k, maxAge)
+}
+
 func (n *RNN) PrintWeights() {
     for i := uint(0); i < n.k; i++ {
         for j := uint(0); j < n.k; j++ {
@@ -106,4 +114,12 @@ func (n *RNN) Detect(x []int, sync bool, printMode uint8) []int {
     }
 
     return out
+}
+
+func (n *RNN) DetectByLetter(letter Letter, sync bool, printMode uint8) Letter {
+    return Letter{
+        data: n.Detect(letter.data, sync, printMode),
+        height: letter.height,
+        width: letter.width,
+    }
 }
