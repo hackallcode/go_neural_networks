@@ -73,12 +73,19 @@ function CanvasInit(id, scale, width, height) {
         ResizeCanvas(canvas);
         Resize.scalable_canvases.push(canvas);
     }
+    ClearCanvas(canvas);
     return canvas;
 }
 
-function ClearCanvas() {
+function ClearCanvas(canvas) {
     let ctx = canvas.getContext('2d');
     ctx.clearRect(0, 0, canvas.width, canvas.height)
+    ctx.fillStyle = '#eee';
+    for (let x = 0; x < canvas.width; x++) {
+        for (let y = x % 2; y < canvas.height; y += 2) {
+            ctx.fillRect(x, y, 1, 1)
+        }
+    }
 }
 
 function LoadImage(old_canvas, src, new_canvas, callback) {
