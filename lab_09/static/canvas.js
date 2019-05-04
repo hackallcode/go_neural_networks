@@ -33,9 +33,8 @@ function ResizeCanvas(canvas) {
     let offset_ratio = canvas.offsetWidth / canvas.offsetHeight;
     if (canvas_ratio > offset_ratio) {
         canvas.style.height = canvas.offsetWidth / canvas_ratio + 'px';
-    }
-    else {
-        canvas.style.width =  canvas.offsetHeight * canvas_ratio + 'px';
+    } else {
+        canvas.style.width = canvas.offsetHeight * canvas_ratio + 'px';
     }
 
     ctx.scale(canvas.scale, canvas.scale);
@@ -52,6 +51,7 @@ function Resize() {
         Resize.callback();
     }
 }
+
 Resize.canvases = [];
 Resize.scalable_canvases = [];
 Resize.callback = null;
@@ -66,8 +66,7 @@ function CanvasInit(id, scale, width, height) {
         canvas.scale = scale;
         CropCanvas(canvas);
         Resize.canvases.push(canvas);
-    }
-    else {
+    } else {
         canvas.width = width;
         canvas.height = height;
         canvas.scale = scale;

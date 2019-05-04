@@ -26,6 +26,6 @@ type AddAreaAnswerData struct {
 }
 
 type TrainAnswerData struct {
-    Finished bool            `json:"finished"`
+    Finished bool                        `json:"finished"`
     Clusters []cluster.ClusterWithPoints `json:"clusters"`
 }

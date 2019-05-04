@@ -9,7 +9,7 @@ import (
 )
 
 const (
-    defaultMaxAge = 100
+    defaultMaxAge   = 100
     defaultDistFunc = 1
 )
 

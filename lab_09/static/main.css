@@ -29,7 +29,7 @@ body {
     justify-content: space-between;
 }
 
-#btn-bar+#canvases {
+#btn-bar + #canvases {
     margin-top: 2em;
     height: calc(100% - 2em);
 }
