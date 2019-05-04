@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>Cluster data analysis</title>
+    <link rel="stylesheet" href="/static/main.css">
+</head>
+<body>
+<div id="btn-bar">
+    <div style="height: 2em">
+        <label for="distId" style="line-height: 2em; color: #d5d0ce; margin-right: .5em;">Distance ID: </label>
+        <input type="number" id="distId" value="1" style="width: 3em; text-align: center;">
+    </div>
+    <div style="height: 2em">
+        <label for="maxAge" style="line-height: 2em; color: #d5d0ce; margin-right: .5em;">Max age: </label>
+        <input type="number" id="maxAge" value="100" style="width: 4em; text-align: center;">
+    </div>
+    <a onclick="train();">Train By Step</a>
+    <a onclick="train();">Train</a>
+</div>
+<div id="canvases">
+    <canvas id="canvas"></canvas>
+</div>
+<script src="/static/jquery-3.4.1.min.js"></script>
+<script src="/static/canvas.js"></script>
+<script src="/static/api.js"></script>
+<script src="/static/cluster.js"></script>
+</body>
+</html>
