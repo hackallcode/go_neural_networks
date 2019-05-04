@@ -9,14 +9,18 @@
 <div id="btn-bar">
     <div style="height: 2em">
         <label for="distId" style="line-height: 2em; color: #d5d0ce; margin-right: .5em;">Distance ID: </label>
-        <input type="number" id="distId" value="1" style="width: 3em; text-align: center;">
+        <select id="distId">
+            <option value="1">Euclidean</option>
+            <option value="2">Manhattan</option>
+            <option value="3">Chebyshev</option>
+        </select>
     </div>
     <div style="height: 2em">
         <label for="maxAge" style="line-height: 2em; color: #d5d0ce; margin-right: .5em;">Max age: </label>
         <input type="number" id="maxAge" value="100" style="width: 4em; text-align: center;">
     </div>
-    <a onclick="train();">Train By Step</a>
-    <a onclick="train();">Train</a>
+    <a onclick="train(true);">Train By Step</a>
+    <a onclick="train(false);">Train</a>
 </div>
 <div id="canvases">
     <canvas id="canvas"></canvas>

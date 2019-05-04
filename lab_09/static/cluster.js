@@ -47,7 +47,7 @@ function addCluster(ctx, x, y, color) {
 function train(byStep) {
     ApiAddPoints(points, () => {
         ApiAddClusters(clusters, () => {
-            ApiTrain($('distId').val(), byStep, $('maxAge').val(), (data) => {
+            ApiTrain(Number($('#distId').val()), byStep, Number($('#maxAge').val()), (data) => {
                 ClearCanvas();
                 points = [];
                 clusters = [];
