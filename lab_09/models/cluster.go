@@ -21,6 +21,10 @@ type TrainData struct {
     DistFuncId int  `json:"dist_id"`
 }
 
+type ClearAreaData struct {
+    Id       int             `json:"id"`
+}
+
 type AddAreaAnswerData struct {
     Id int `json:"id"`
 }

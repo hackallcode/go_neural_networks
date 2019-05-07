@@ -120,3 +120,27 @@ func Train(w http.ResponseWriter, r *http.Request) {
         Clusters: area.GetClustersWithPoints(distFunc),
     }))
 }
+
+func ClearArea(w http.ResponseWriter, r *http.Request) {
+    inputData := models.ClearAreaData{}
+    err := json.NewDecoder(r.Body).Decode(&inputData)
+    if err != nil {
+        models.SendJson(w, http.StatusInternalServerError, models.IncorrectJsonAnswer)
+        return
+    }
+
+    err = r.Body.Close()
+    if err != nil {
+        models.SendJson(w, http.StatusInternalServerError, models.GetErrorAnswer(err.Error()))
+        return
+    }
+
+    area, err := storage.GetArea(inputData.Id)
+    if err != nil {
+        models.SendJson(w, http.StatusInternalServerError, models.GetErrorAnswer(err.Error()))
+        return
+    }
+    area.Clear()
+
+    models.SendJson(w, http.StatusOK, models.GetSuccessAnswer("ok"))
+}

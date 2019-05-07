@@ -20,6 +20,7 @@ func Start(port string) error {
 
     apiRouter.HandleFunc("/", handlers.ApiHomeHandler)
     apiRouter.HandleFunc("/area", handlers.AddArea).Methods("POST")
+    apiRouter.HandleFunc("/area", handlers.ClearArea).Methods("DELETE")
     apiRouter.HandleFunc("/point", handlers.AddPoint).Methods("POST")
     apiRouter.HandleFunc("/cluster", handlers.AddCluster).Methods("POST")
     apiRouter.HandleFunc("/train", handlers.Train).Methods("POST")

@@ -77,6 +77,11 @@ function train(distId, byStep, maxAge) {
     });
 }
 
+function clearArea() {
+    ApiClearArea(areaId);
+    clearAll();
+}
+
 function leftClick(event) {
     event.preventDefault();
     addPoint(ctx, Math.trunc(event.offsetX / SCALE), Math.trunc(event.offsetY / SCALE), pointsColor);
@@ -111,4 +116,16 @@ function addTestData() {
     for (let i = 0; i < 5; i++) {
         addCluster(ctx, randomInt(canvas.width / SCALE), randomInt(canvas.height / SCALE), getClusterColor());
     }
+}
+
+function addSamples() {
+    addPoint(ctx, 143, 213, pointsColor);
+    addPoint(ctx, 180, 220, pointsColor);
+    addPoint(ctx, 183, 249, pointsColor);
+    addPoint(ctx, 271, 253, pointsColor);
+    addPoint(ctx, 226, 253, pointsColor);
+    addPoint(ctx, 315, 275, pointsColor);
+    addPoint(ctx, 266, 297, pointsColor);
+    addCluster(ctx, 159, 238, getClusterColor());
+    addCluster(ctx, 270, 278, getClusterColor());
 }

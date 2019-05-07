@@ -50,10 +50,16 @@ func (cl *Area) TrainStep(distFunc IDistance) bool {
     newClusters := make([]avg, len(cl.clusters))
 
     for p := range cl.points {
+        fmt.Printf("x_%v=(%v;%v); ", p+1, Round(cl.points[p].X, ResultAccuracy), Round(cl.points[p].Y, ResultAccuracy))
+    }
+    fmt.Println()
+
+    for p := range cl.points {
         minDist := float64(-1)
         minCluster := -1
         for c := range cl.clusters {
             dist := distFunc(cl.points[p], cl.clusters[c])
+            fmt.Printf("ρ_%v%v=%v; ", p+1, c+1, Round(dist, ResultAccuracy))
             if minCluster == -1 || dist < minDist {
                 minDist = dist
                 minCluster = c
@@ -63,11 +69,13 @@ func (cl *Area) TrainStep(distFunc IDistance) bool {
         newClusters[minCluster].sum.Y += cl.points[p].Y
         newClusters[minCluster].count++
     }
+    fmt.Println()
 
     finished := true
     for c := range newClusters {
         oldX := cl.clusters[c].X
         oldY := cl.clusters[c].Y
+        fmt.Printf("Y_%v=(%v;%v); ", c+1, Round(oldX, ResultAccuracy), Round(oldY, ResultAccuracy))
 
         if newClusters[c].count != 0 {
             cl.clusters[c].X = newClusters[c].sum.X / float64(newClusters[c].count)
@@ -78,6 +86,7 @@ func (cl *Area) TrainStep(distFunc IDistance) bool {
             finished = false
         }
     }
+    fmt.Println()
 
     return finished
 }
@@ -89,6 +98,11 @@ func (cl *Area) Train(distFunc IDistance, maxAge uint) bool {
         }
     }
     return false
+}
+
+func (cl *Area) Clear() {
+    cl.points = cl.points[:0]
+    cl.clusters = cl.clusters[:0]
 }
 
 func (cl *Area) GetClusters() []Point {

@@ -17,7 +17,7 @@ func main() {
     // cl.AddPoint(cluster.Point{X: 266, Y: 297})
     // cl.AddCluster(cluster.Point{X: 159, Y: 238})
     // cl.AddCluster(cluster.Point{X: 270, Y: 278})
-    // cl.Train(cluster.EuclideanDistance, 1000)
+    // cl.Train(cluster.EuclideanDistance, 100)
     // cl.Print()
 
     err := server.Start("4000")
