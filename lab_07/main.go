@@ -4,57 +4,57 @@ import (
     "fmt"
     "strconv"
 
-    "labs/rnn"
+    "lab_07/rnn"
 )
 
 var (
     letter1 = rnn.CreateLetterFromText([]string{
-        " * ",
-        "** ",
-        " * ",
-        " * ",
-        "***",
+        " @ ",
+        "@@ ",
+        " @ ",
+        " @ ",
+        "@@@",
     }, 3, 5)
     letter2 = rnn.CreateLetterFromText([]string{
-        "***",
-        "  *",
-        "***",
-        "*  ",
-        "***",
+        "@@@",
+        "  @",
+        "@@@",
+        "@  ",
+        "@@@",
     }, 3, 5)
     letter3 = rnn.CreateLetterFromText([]string{
-        "***",
-        "  *",
-        " **",
-        "  *",
-        "***",
+        "@@@",
+        "  @",
+        " @@",
+        "  @",
+        "@@@",
     }, 3, 5)
     letterS = rnn.CreateLetterFromText([]string{
-        " *** ",
-        "*   *",
-        "*    ",
-        " *** ",
-        "    *",
-        "*   *",
-        " *** ",
+        " @@@ ",
+        "@   @",
+        "@    ",
+        " @@@ ",
+        "    @",
+        "@   @",
+        " @@@ ",
     }, 5, 7)
     letterT = rnn.CreateLetterFromText([]string{
-        "*****",
-        "  *  ",
-        "  *  ",
-        "  *  ",
-        "  *  ",
-        "  *  ",
-        "  *  ",
+        "@@@@@",
+        "  @  ",
+        "  @  ",
+        "  @  ",
+        "  @  ",
+        "  @  ",
+        "  @  ",
     }, 5, 7)
     letterU = rnn.CreateLetterFromText([]string{
-        "*   *",
-        "*   *",
-        "*   *",
-        "*   *",
-        "*   *",
-        "*   *",
-        " *** ",
+        "@   @",
+        "@   @",
+        "@   @",
+        "@   @",
+        "@   @",
+        "@   @",
+        " @@@ ",
     }, 5, 7)
 )
 
@@ -91,25 +91,25 @@ func main() {
     DelectLetter(&rnn123, letter3, true, 0)
 
     DelectLetter(&rnn123, rnn.CreateLetterFromText([]string{
-        "** ",
-        " * ",
-        " * ",
-        " * ",
-        " * ",
+        "@@ ",
+        " @ ",
+        " @ ",
+        " @ ",
+        " @ ",
     }, 3, 5), true, 0)
     DelectLetter(&rnn123, rnn.CreateLetterFromText([]string{
-        " **",
+        " @@",
         "   ",
-        "***",
-        "*  ",
-        "** ",
+        "@@@",
+        "@  ",
+        "@@ ",
     }, 3, 5), true, 0)
     DelectLetter(&rnn123, rnn.CreateLetterFromText([]string{
-        " **",
-        "  *",
-        " **",
-        "  *",
-        " **",
+        " @@",
+        "  @",
+        " @@",
+        "  @",
+        " @@",
     }, 3, 5), true, 0)
 
     // fmt.Println()
@@ -123,29 +123,29 @@ func main() {
     //
     // DelectLetter(&rnnSTU, rnn.CreateLetterFromText([]string{
     //     "     ",
-    //     " *** ",
-    //     "*    ",
-    //     " *** ",
-    //     "    *",
-    //     "    *",
-    //     " *** ",
+    //     " @@@ ",
+    //     "@    ",
+    //     " @@@ ",
+    //     "    @",
+    //     "    @",
+    //     " @@@ ",
     // }, 5, 7), false, 0)
     // DelectLetter(&rnnSTU, rnn.CreateLetterFromText([]string{
     //     "     ",
     //     "     ",
-    //     " *** ",
-    //     "  *  ",
-    //     "  *  ",
+    //     " @@@ ",
+    //     "  @  ",
+    //     "  @  ",
     //     "     ",
     //     "     ",
     // }, 5, 7), false, 0)
     // DelectLetter(&rnnSTU, rnn.CreateLetterFromText([]string{
     //     "     ",
     //     "     ",
-    //     "*   *",
-    //     "*   *",
-    //     "*   *",
-    //     " *** ",
+    //     "@   @",
+    //     "@   @",
+    //     "@   @",
+    //     " @@@ ",
     //     "     ",
     // }, 5, 7), false, 0)
 }

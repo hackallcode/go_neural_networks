@@ -59,7 +59,7 @@ func (cl *Area) TrainStep(distFunc IDistance) bool {
 
     fmt.Println("Clusters:")
     for c := range cl.clusters {
-        fmt.Printf("Y_%v=(%v;%v); ", c+1, Round(cl.clusters[c].X, ResultAccuracy), Round(cl.clusters[c].Y, ResultAccuracy))
+        fmt.Printf("Y_%v^((%v))=(%v;%v); ", c+1, cl.age, Round(cl.clusters[c].X, ResultAccuracy), Round(cl.clusters[c].Y, ResultAccuracy))
     }
     fmt.Println()
 
@@ -69,7 +69,7 @@ func (cl *Area) TrainStep(distFunc IDistance) bool {
         minCluster := -1
         for c := range cl.clusters {
             dist := distFunc(cl.points[p], cl.clusters[c])
-            fmt.Printf("ρ_%v%v=%v; ", p+1, c+1, Round(dist, ResultAccuracy))
+            fmt.Printf("ρ_%v%v^((%v))=%v; ", p+1, c+1, cl.age, Round(dist, ResultAccuracy))
             if minCluster == -1 || dist < minDist {
                 minDist = dist
                 minCluster = c

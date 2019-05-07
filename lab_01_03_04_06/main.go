@@ -212,8 +212,8 @@ func main() {
 	// lab04("step", learningSetL04V11, neuron.CreateNeuron(&neuron.ActivationStep{}, &neuron.ErrorCount{}, 200), 1)
 	// lab04("exponential", learningSetL04V11, neuron.CreateNeuron(&neuron.ActivationExp{}, &neuron.ErrorCount{}, 200), 1)
 
-	// lab06("exponential", []float64{0.3, -0.1, 0.9}, []float64{0.1, -0.6, 0.2, 0.7},
-	// neuron.CreateNJM(3, 3, 4, 0.5, &neuron.ActivationExpExp{}, &neuron.ErrorSquare{}, 1000), 2)
+	lab06("exponential", []float64{0.3, -0.1, 0.9}, []float64{0.1, -0.6, 0.2, 0.7},
+	neuron.CreateNJM(3, 3, 4, 0.5, &neuron.ActivationExpExp{}, &neuron.ErrorSquare{}, 1000), 2)
 
 	// lab06("exponential", []float64{-.3}, []float64{-.3, .1, .1},
 	// neuron.CreateNJM(1, 1, 3, 0.5, &neuron.ActivationExpExp{}, &neuron.ErrorSquare{}, 1000), 1)

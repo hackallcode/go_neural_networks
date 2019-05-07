@@ -5,7 +5,7 @@ import (
 )
 
 const (
-    BlackChar = '*'
+    BlackChar = '@'
     WhiteChar = ' '
 )
 
