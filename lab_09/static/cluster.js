@@ -1,6 +1,7 @@
-const pointsColor = '#000000';
+const SCALE = 10;
 
-let colors = [
+const pointsColor = '#000000';
+const colors = [
     '#F7E017',
     '#ED6E00',
     '#E60094',
@@ -15,7 +16,7 @@ let colors = [
     '#B878BF',
     '#73B5E0',
 ];
-let lastColor = 0;
+    let lastColor = 0;
 
 function getClusterColor() {
     let color = colors[lastColor];
@@ -93,7 +94,6 @@ function rightClick(event) {
 }
 
 // Main code
-let SCALE = 10;
 let canvas = CanvasInit('canvas', SCALE);
 let ctx = canvas.getContext('2d');
 canvas.addEventListener('click', leftClick);
