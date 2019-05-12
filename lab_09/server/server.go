@@ -19,6 +19,7 @@ func Start(port string) error {
     apiRouter.Use(middleware.ApplyJsonContentType)
 
     apiRouter.HandleFunc("/", handlers.ApiHomeHandler)
+    apiRouter.HandleFunc("/area", handlers.GetArea).Queries("id", "{id:[0-9]+}", "dist_id", "{dist_id:[0-9]+}").Methods("GET")
     apiRouter.HandleFunc("/area", handlers.AddArea).Methods("POST")
     apiRouter.HandleFunc("/area", handlers.ClearArea).Methods("DELETE")
     apiRouter.HandleFunc("/point", handlers.AddPoint).Methods("POST")

@@ -3,6 +3,9 @@ package handlers
 import (
     "encoding/json"
     "net/http"
+    "strconv"
+
+    "github.com/gorilla/mux"
 
     "lab_09/models"
     "lab_09/storage"
@@ -117,6 +120,49 @@ func Train(w http.ResponseWriter, r *http.Request) {
 
     models.SendJson(w, http.StatusOK, models.GetTrainAnswer(&models.TrainAnswerData{
         Finished: finished,
+        Clusters: area.GetClustersWithPoints(distFunc),
+    }))
+}
+
+func GetArea(w http.ResponseWriter, r *http.Request) {
+    vars := mux.Vars(r)
+
+    areaIdStr, ok := vars["id"]
+    if !ok {
+        models.SendJson(w, http.StatusBadRequest, models.IncorrectRequestAnswer)
+        return
+    }
+    areaIdInt64, err := strconv.ParseInt(areaIdStr, 10, 64)
+    if err != nil {
+        models.SendJson(w, http.StatusBadRequest, models.IncorrectRequestAnswer)
+        return
+    }
+    areaId := int(areaIdInt64)
+
+    distFuncId := defaultDistFunc
+    distFuncIdStr, ok := vars["dist_id"]
+    if ok {
+        distFuncIdInt64, err := strconv.ParseInt(distFuncIdStr, 10, 64)
+        if err != nil {
+            models.SendJson(w, http.StatusBadRequest, models.IncorrectRequestAnswer)
+            return
+        }
+        distFuncId = int(distFuncIdInt64)
+    }
+
+    area, err := storage.GetArea(areaId)
+    if err != nil {
+        models.SendJson(w, http.StatusInternalServerError, models.GetErrorAnswer(err.Error()))
+        return
+    }
+
+    distFunc, err := storage.GetDistFunc(distFuncId)
+    if err != nil {
+        models.SendJson(w, http.StatusInternalServerError, models.GetErrorAnswer(err.Error()))
+        return
+    }
+
+    models.SendJson(w, http.StatusOK, models.GetAreaAnswer(&models.GetAreaAnswerData{
         Clusters: area.GetClustersWithPoints(distFunc),
     }))
 }

@@ -1,9 +1,10 @@
-function Post(url, data, callback) {
+function Ajax(type, url, data, callback) {
+    type = type.toUpperCase();
     $.ajax({
-        type: 'POST',
+        type: type,
         url: url,
-        data: JSON.stringify(data),
-        dataType: 'json',
+        data: type === 'GET' ? data : JSON.stringify(data),
+        dataType: type === 'GET' ? '' : 'json',
     })
         .done((answer) => {
             if (100 <= answer.status && answer.status < 200) {
@@ -19,25 +20,16 @@ function Post(url, data, callback) {
         })
 }
 
+function Get(url, data, callback) {
+    Ajax('GET', url, data, callback)
+}
+
+function Post(url, data, callback) {
+    Ajax('POST', url, data, callback)
+}
+
 function Delete(url, data, callback) {
-    $.ajax({
-        type: 'DELETE',
-        url: url,
-        data: JSON.stringify(data),
-        dataType: 'json',
-    })
-        .done((answer) => {
-            if (100 <= answer.status && answer.status < 200) {
-                if (callback) {
-                    callback(answer.data);
-                }
-            } else {
-                console.error(answer.message);
-            }
-        })
-        .fail((error) => {
-            console.error(error);
-        })
+    Ajax('DELETE', url, data, callback)
 }
 
 function ApiAddArea(callback) {
@@ -54,6 +46,10 @@ function ApiAddClusters(areaId, clusters, callback) {
 
 function ApiTrain(areaId, distanceId, byStep, maxAge, callback) {
     Post("/api/train", {id: areaId, dist_id: distanceId, by_step: byStep, max_age: maxAge}, callback)
+}
+
+function ApiGetArea(areaId, distanceId, callback) {
+    Get("/api/area", {id: areaId, dist_id: distanceId}, callback)
 }
 
 function ApiClearArea(areaId, callback) {

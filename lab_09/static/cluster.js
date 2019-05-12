@@ -16,7 +16,7 @@ const colors = [
     '#B878BF',
     '#73B5E0',
 ];
-    let lastColor = 0;
+let lastColor = 0;
 
 function getClusterColor() {
     let color = colors[lastColor];
@@ -63,17 +63,31 @@ function addCluster(ctx, x, y, color) {
 function train(distId, byStep, maxAge) {
     ApiAddPoints(areaId, points, () => {
         ApiAddClusters(areaId, clusters, () => {
-            ApiTrain(areaId, distId, byStep, maxAge, (data) => {
-                clearAll();
+            if (byStep && points.length > 0) {
+                ApiGetArea(areaId, distId, (data) => {
+                    clearAll();
 
-                data.clusters.forEach((cluster) => {
-                    let color = getClusterColor();
-                    printCluster(ctx, cluster.x, cluster.y, color);
-                    cluster.points.forEach((point) => {
-                        printPoint(ctx, point.x, point.y, color);
+                    data.clusters.forEach((cluster) => {
+                        let color = getClusterColor();
+                        printCluster(ctx, cluster.x, cluster.y, color);
+                        cluster.points.forEach((point) => {
+                            printPoint(ctx, point.x, point.y, color);
+                        });
                     });
                 });
-            })
+            } else {
+                ApiTrain(areaId, distId, byStep, maxAge, (data) => {
+                    clearAll();
+
+                    data.clusters.forEach((cluster) => {
+                        let color = getClusterColor();
+                        printCluster(ctx, cluster.x, cluster.y, color);
+                        cluster.points.forEach((point) => {
+                            printPoint(ctx, point.x, point.y, color);
+                        });
+                    });
+                })
+            }
         });
     });
 }
@@ -119,13 +133,19 @@ function addTestData() {
 }
 
 function addSamples() {
-    addPoint(ctx, 143, 213, pointsColor);
-    addPoint(ctx, 180, 220, pointsColor);
-    addPoint(ctx, 183, 249, pointsColor);
-    addPoint(ctx, 271, 253, pointsColor);
-    addPoint(ctx, 226, 253, pointsColor);
-    addPoint(ctx, 315, 275, pointsColor);
-    addPoint(ctx, 266, 297, pointsColor);
-    addCluster(ctx, 159, 238, getClusterColor());
-    addCluster(ctx, 270, 278, getClusterColor());
+    addPoint(ctx, 8, 31, pointsColor);
+    addPoint(ctx, 16, 36, pointsColor);
+    addPoint(ctx, 8, 35, pointsColor);
+    addPoint(ctx, 13, 31, pointsColor);
+    addPoint(ctx, 62, 27, pointsColor);
+    addPoint(ctx, 56, 34, pointsColor);
+    addPoint(ctx, 63, 36, pointsColor);
+    addPoint(ctx, 52, 23, pointsColor);
+    addPoint(ctx, 49, 8, pointsColor);
+    addPoint(ctx, 40, 11, pointsColor);
+    addPoint(ctx, 39, 4, pointsColor);
+    addPoint(ctx, 19, 16, pointsColor);
+    addCluster(ctx, 33, 22, getClusterColor());
+    addCluster(ctx, 26, 32, getClusterColor());
+    addCluster(ctx, 59, 14, getClusterColor());
 }

@@ -17,6 +17,12 @@ type TrainAnswer struct {
     Data    TrainAnswerData `json:"data"`
 }
 
+type AreaAnswer struct {
+    Status  int               `json:"status, int" example:"101"`
+    Message string            `json:"message, string" example:"user found"`
+    Data    GetAreaAnswerData `json:"data"`
+}
+
 func GetSuccessAnswer(message string) *MessageAnswer {
     return &MessageAnswer{
         Status:  100,
@@ -40,6 +46,14 @@ func GetTrainAnswer(data *TrainAnswerData) *TrainAnswer {
     }
 }
 
+func GetAreaAnswer(data *GetAreaAnswerData) *AreaAnswer {
+    return &AreaAnswer{
+        Status:  103,
+        Message: "ok",
+        Data:    *data,
+    }
+}
+
 func GetErrorAnswer(error string) *MessageAnswer {
     return &MessageAnswer{
         Status:  200,
@@ -50,4 +64,9 @@ func GetErrorAnswer(error string) *MessageAnswer {
 var IncorrectJsonAnswer = MessageAnswer{
     Status:  201,
     Message: "incorrect JSON",
+}
+
+var IncorrectRequestAnswer = MessageAnswer{
+    Status:  202,
+    Message: "incorrect request",
 }
